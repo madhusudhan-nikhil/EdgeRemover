@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\check-edge-status.ps1*)",
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\check-edge-status.ps1*)"
+    ],
+    "ask": [
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\remove-edge.ps1*)",
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\remove-edge.ps1*)",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\\restore-edge.ps1*)",
+      "Bash(powershell -NoProfile -ExecutionPolicy Bypass -File scripts\\restore-edge.ps1*)"
+    ]
+  }
+}

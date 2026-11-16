@@ -1,0 +1,99 @@
+openapi: 3.1.0
+info:
+  title: Edge Removal & Policy Management Local API
+  description: Localhost management service allowing AI agents to query Microsoft Edge installation state, execute elevated uninstallation workflows, and manage reinstallation blocker policies on Windows.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local Windows Agent Daemon
+paths:
+  /status:
+    get:
+      operationId: getEdgeStatus
+      summary: Audit Edge & WebView2 status
+      description: Returns real-time status of Edge binaries, active processes, registry policy keys, update services, and scheduled tasks.
+      responses:
+        '200':
+          description: System status report
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timestamp:
+                    type: string
+                    format: date-time
+                  edgeInstalled:
+                    type: boolean
+                  webView2Installed:
+                    type: boolean
+                  servicesDisabled:
+                    type: boolean
+                  tasksDisabled:
+                    type: boolean
+                  policiesConfigured:
+                    type: boolean
+                  overallCompliant:
+                    type: boolean
+                  overallStatus:
+                    type: string
+                    enum: [REMOVED_AND_BLOCKED, INSTALLED_OR_UNBLOCKED]
+  /uninstall:
+    post:
+      operationId: triggerUninstall
+      summary: Execute Edge removal workflow
+      description: Initiates process termination, registry policy unlocking, setup.exe uninstallation, AppX purging, shortcut cleanup, and policy enforcement.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                force:
+                  type: boolean
+                  default: true
+                purgeWebView2:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Uninstallation workflow initiated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  exitCode:
+                    type: integer
+  /restore:
+    post:
+      operationId: triggerRestore
+      summary: Restore update policies and services
+      description: Clears blocker policies and restores update services to demand start, enabling Microsoft Edge and WebView2 to be reinstalled.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                force:
+                  type: boolean
+                  default: true
+      responses:
+        '200':
+          description: Policies and services restored successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
