@@ -57,6 +57,24 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts\restore-edge.ps1
 
 ## 🛠️ How It Works Under the Hood
 
+```mermaid
+flowchart TD
+    Start([User / Agent triggers script]) --> UAC{Admin Privileges?}
+    UAC -- No --> Elevate[Prompt UAC Elevation] --> UAC
+    UAC -- Yes --> Confirm{Safety Confirmation?}
+    Confirm -- No --> Abort([Exit Safely])
+    Confirm -- Yes --> KillProc["1. Terminate Active Processes<br/>(msedge.exe, msedgewebview2.exe)"]
+    
+    KillProc --> Unlock["2. Clear Policy Locks<br/>(NoRemove=0, SystemComponent=0)"]
+    Unlock --> NativeUninstall["3. Execute Native Chromium Uninstall<br/>(setup.exe --force-uninstall)"]
+    NativeUninstall --> AppX["4. Purge AppX Packages<br/>(Remove Microsoft.MicrosoftEdge)"]
+    AppX --> Shortcuts["5. Remove Shortcuts & CLI Paths<br/>(Start Menu, Desktop, App Paths)"]
+    Shortcuts --> BlockerPolicies["6. Apply Prevention Registry Policies<br/>(DoNotUpdateToEdgeWithChromium=1, InstallDefault=0)"]
+    BlockerPolicies --> DisableServices["7. Disable Services & Tasks<br/>(edgeupdate, edgeupdatem, tasks)"]
+    DisableServices --> AuditCheck["8. Run Status Verification<br/>(check-edge-status.ps1)"]
+    AuditCheck --> Done([Edge Removed & Reinstallation Blocked])
+```
+
 Standard Windows settings disable the "Uninstall" button for Microsoft Edge. This package systematically bypasses those restrictions:
 
 1. **Process Lock Termination**: Repeatedly stops file-locking background processes (`msedge.exe`, `msedgewebview2.exe`, `SearchHost.exe`) so files can be removed without restart.
