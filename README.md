@@ -140,6 +140,13 @@ winget install Microsoft.EdgeWebView2Runtime
 
 ---
 
+## 👥 Contributors
+
+- **[Nikhil Madhusudhan](https://github.com/madhusudhan-nikhil)** — Project Lead & Author
+- **[Antigravity](https://github.com/google-deepmind)** (Google DeepMind) — Autonomous Multi-Agent Systems Architecture, Tooling & Verification
+
+---
+
 ## 📄 License
 
 This project is licensed under the [MIT License](LICENSE).
